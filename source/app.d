@@ -1,6 +1,7 @@
 import arsd.simpledisplay;
 
 void main() {
-    auto window = new SimpleWindow(400, 300, "My ARSD Window");
+    // This opens a small window on Windows
+    auto window = new SimpleWindow(200, 200, "Success");
     window.eventLoop(0);
 }

@@ -2,11 +2,11 @@
 	"authors": [
 		"jedizlapulga"
 	],
-	"copyright": "2026",
-	"dependencies": {
-    	"arsd-official:simpledisplay":"~>12.1.0"
-	,
+	"copyright": "Copyright © 2026, Joel",
 	"description": "A minimal D application.",
 	"license": "Unlicense",
-	"name": "sd"
+	"name": "sd",
+	"dependencies": {
+		"arsd-official:simpledisplay": "~>12.1.0"
+	}
 }
