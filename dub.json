@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"jedizlapulga"
+	],
+	"copyright": "2026",
+	"description": "A minimal D application.",
+	"license": "Unlicense",
+	"name": "sd"
+}
