@@ -7,6 +7,8 @@
 	"license": "Unlicense",
 	"name": "sd",
 	"dependencies": {
-		"arsd-official:simpledisplay": "~>12.1.0"
+		"arsd-official:simpledisplay": "~>12.1.0",
+		"arsd-official:terminal": "~>12.1.0"
+
 	}
 }

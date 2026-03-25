@@ -1,27 +1,35 @@
-import arsd.simpledisplay;
-import arsd.color;
+import arsd.terminal;
+import std.stdio;
 
 void main() {
-    // 1. Create your color
-    auto myColor = Color(255, 128, 0); // Orange
+    // 'realTime' mode turns off the terminal's "Line Buffer"
+    // This means bytes go from keyboard -> OS -> D program immediately
+    auto terminal = Terminal(ConsoleOutputMode.realTime);
+    
+    terminal.writeln("--- ARSD Input Debugger ---");
+    terminal.writeln("Press keys, move mouse, or 'q' to quit.");
 
-    // 2. Create the window
-    auto window = new SimpleWindow(500, 400, "ARSD Color Check");
+    bool running = true;
+    while(running) {
+        // Wait for a hardware event
+        auto event = terminal.expectInput(); 
 
-    // 3. Define the paint handler
-    window.onPaint = delegate () {
-        auto painter = window.draw(); // Get the painter object
-        
-        painter.clear(Color.white);
-        
-        // Set the color and draw the box
-        painter.fillColor = myColor;
-        painter.drawRectangle(Point(100, 100), 300, 200);
-        
-        painter.outlineColor = Color.black;
-        painter.drawRectangle(Point(100, 100), 300, 200);
-    };
+        if(event.type == TerminalInput.Type.keyEvent && event.keyEvent.pressed) {
+            char c = event.keyEvent.character;
+            if(c == 'q' || c == 'Q') running = false;
 
-    // 4. Start the loop
-    window.eventLoop(0);
+            terminal.writef("\rKey Pressed: %s | Char Code: %d    ", 
+                c == 0 ? "Special" : [c], cast(int)c);
+        }
+
+        if(event.type == TerminalInput.Type.mouseEvent) {
+            // This shows how ARSD translates raw terminal escape codes
+            // like \033[M... into X/Y coordinates
+            terminal.moveTo(0, 5);
+            terminal.writef("Mouse Logic Position: X:%d Y:%d   ", 
+                event.mouseEvent.x, event.mouseEvent.y);
+        }
+    }
+    
+    terminal.reset(); // Clean up so the terminal isn't "broken" after exit
 }
