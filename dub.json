@@ -3,6 +3,9 @@
 		"jedizlapulga"
 	],
 	"copyright": "2026",
+	"dependencies": {
+		"arsd-official": "~>12.1.0"
+	},
 	"description": "A minimal D application.",
 	"license": "Unlicense",
 	"name": "sd"
