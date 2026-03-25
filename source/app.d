@@ -2,34 +2,39 @@ import arsd.terminal;
 import std.stdio;
 
 void main() {
-    // 'realTime' mode turns off the terminal's "Line Buffer"
-    // This means bytes go from keyboard -> OS -> D program immediately
-    auto terminal = Terminal(ConsoleOutputMode.realTime);
+    // 1. In 12.1.0, 'allInput' usually enables keys + mouse
+    auto terminal = Terminal(ConsoleOutputType.allInput);
     
+    terminal.clear();
+    terminal.setTitle("ARSD 12.1 Debugger");
     terminal.writeln("--- ARSD Input Debugger ---");
-    terminal.writeln("Press keys, move mouse, or 'q' to quit.");
+    terminal.writeln("Press keys or move mouse. Press 'q' to quit.");
 
     bool running = true;
     while(running) {
-        // Wait for a hardware event
+        // expectInput() returns an InputEvent
         auto event = terminal.expectInput(); 
 
-        if(event.type == TerminalInput.Type.keyEvent && event.keyEvent.pressed) {
-            char c = event.keyEvent.character;
-            if(c == 'q' || c == 'Q') running = false;
+        // 2. Accessing the Event Type
+        // In this version, 'Type' is likely an enum INSIDE InputEvent
+        if (event.type == InputEvent.Type.Key) {
+            auto k = event.key;
+            if (k.pressed) {
+                if (k.character == 'q' || k.character == 'Q') running = false;
 
-            terminal.writef("\rKey Pressed: %s | Char Code: %d    ", 
-                c == 0 ? "Special" : [c], cast(int)c);
+                terminal.moveTo(0, 5);
+                terminal.writef("Key: %s (ASCII: %d)      ", 
+                    k.character == 0 ? "Special" : [k.character], 
+                    cast(int)k.character);
+            }
         }
 
-        if(event.type == TerminalInput.Type.mouseEvent) {
-            // This shows how ARSD translates raw terminal escape codes
-            // like \033[M... into X/Y coordinates
-            terminal.moveTo(0, 5);
-            terminal.writef("Mouse Logic Position: X:%d Y:%d   ", 
-                event.mouseEvent.x, event.mouseEvent.y);
+        if (event.type == InputEvent.Type.Mouse) {
+            auto m = event.mouse;
+            terminal.moveTo(0, 6);
+            terminal.writef("Mouse Cell -> X:%d Y:%d   ", m.x, m.y);
         }
     }
     
-    terminal.reset(); // Clean up so the terminal isn't "broken" after exit
+    terminal.reset(); 
 }
